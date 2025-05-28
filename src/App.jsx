@@ -75,7 +75,7 @@ const TorcidaSolidariaSimpleReports = () => {
   ];
 
   const filteredReports = reports.filter(report => {
-    if (filterStatus === 'todos') return true;
+    if (filterStatus === 'pendentes') return true;
     return report.status === filterStatus;
   });
 
@@ -211,6 +211,7 @@ const TorcidaSolidariaSimpleReports = () => {
             onChange={(e) => setFilterStatus(e.target.value)}
             className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
           >
+            <option value="todos">Todos</option>
             <option value="pendente">Pendentes</option>
             <option value="resolvido">Resolvidos</option>
             <option value="ignorado">Ignorados</option>
