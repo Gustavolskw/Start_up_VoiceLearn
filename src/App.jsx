@@ -1,23 +1,28 @@
 import React, { useState } from 'react';
 import { 
-  MessageCircle, 
-  Calendar,
-  Clock,
-  Send,
-  Check,
-  Star,
-  Home,
-  Car,
-  Users,
-  MapPin,
+  Calendar, 
+  Car, 
+  Users, 
+  MapPin, 
+  Clock, 
+  Star, 
+  Plus, 
   Search,
-  Bell
+  Filter,
+  Edit,
+  X,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  User,
+  Home,
+  Settings
 } from 'lucide-react';
 
-const TorcidaSolidariaChatApp = () => {
-  const [currentScreen, setCurrentScreen] = useState('chat');
-  const [selectedChat, setSelectedChat] = useState(null);
-  const [newMessage, setNewMessage] = useState('');
+const JECaronaApp = () => {
+  const [currentScreen, setCurrentScreen] = useState('dashboard');
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedTeam, setSelectedTeam] = useState('ambos');
 
   // Mock data
   const user = {
@@ -27,80 +32,89 @@ const TorcidaSolidariaChatApp = () => {
     totalRides: 23
   };
 
-  const chats = [
+  const upcomingGames = [
     {
       id: 1,
-      name: 'Maria Santos',
-      game: 'JEC x Chapecoense',
-      gameDate: '2025-06-01',
-      gameTime: '16:00',
-      lastMessage: 'Vamos nos encontrar às 15h no posto Ipiranga?',
-      time: '14:30',
-      unread: 2,
-      status: 'pendente',
-      avatar: '/api/placeholder/40/40',
-      rating: 4.9,
-      neighborhood: 'Itaum'
+      team: 'JEC',
+      opponent: 'Chapecoense',
+      date: '2025-06-01',
+      time: '16:00',
+      location: 'Arena Joinville',
+      type: 'Casa'
     },
     {
       id: 2,
-      name: 'Carlos Lima',
-      game: 'Krona x ACBF',
-      gameDate: '2025-06-03',
-      gameTime: '20:00',
-      lastMessage: 'Carona confirmada! Nos vemos domingo 👍',
-      time: '12:15',
-      unread: 0,
-      status: 'confirmada',
-      avatar: '/api/placeholder/40/40',
-      rating: 4.6,
-      neighborhood: 'América'
+      team: 'Krona',
+      opponent: 'ACBF',
+      date: '2025-06-03',
+      time: '20:00',
+      location: 'Centreventos',
+      type: 'Casa'
     },
     {
       id: 3,
-      name: 'Ana Oliveira',
-      game: 'JEC x Avaí',
-      gameDate: '2025-06-08',
-      gameTime: '19:30',
-      lastMessage: 'Infelizmente preciso cancelar, desculpa...',
-      time: 'Ontem',
-      unread: 1,
-      status: 'cancelada',
-      avatar: '/api/placeholder/40/40',
-      rating: 5.0,
-      neighborhood: 'Bucarein'
-    },
-    {
-      id: 4,
-      name: 'Pedro Costa',
-      game: 'JEC x Chapecoense',
-      gameDate: '2025-06-01',
-      gameTime: '16:00',
-      lastMessage: 'Ainda tem vaga? Sou do centro da cidade',
-      time: '10:15',
-      unread: 0,
-      status: 'negociando',
-      avatar: '/api/placeholder/40/40',
-      rating: 4.7,
-      neighborhood: 'Centro'
+      team: 'JEC',
+      opponent: 'Avaí',
+      date: '2025-06-08',
+      time: '19:30',
+      location: 'Ressacada',
+      type: 'Fora'
     }
   ];
 
-  const messages = [
-    { id: 1, sender: 'other', text: 'Oi! Vi que você ofereceu carona para o jogo do JEC domingo', time: '14:20' },
-    { id: 2, sender: 'me', text: 'Oi Maria! Sim, ainda tenho 2 vagas disponíveis no carro', time: '14:22' },
-    { id: 3, sender: 'other', text: 'Que legal! Sou do Itaum, fica no seu caminho?', time: '14:25' },
-    { id: 4, sender: 'me', text: 'Fica sim! Passo bem ali. Posso te buscar no posto Ipiranga da Rua das Palmeiras', time: '14:27' },
-    { id: 5, sender: 'other', text: 'Perfeito! Que horas você quer se encontrar?', time: '14:28' },
-    { id: 6, sender: 'me', text: 'Que tal às 15h? Assim chegamos com bastante tempo no estádio', time: '14:29' },
-    { id: 7, sender: 'other', text: 'Vamos nos encontrar às 15h no posto Ipiranga?', time: '14:30' }
-  ];
-
-  const activeChats = {
-    pending: chats.filter(chat => chat.status === 'pendente').length,
-    confirmed: chats.filter(chat => chat.status === 'confirmada').length,
-    total: chats.length
+  const activeRides = {
+    asDriver: [
+      {
+        id: 1,
+        game: 'JEC x Chapecoense',
+        date: '2025-06-01',
+        passengers: 2,
+        maxPassengers: 3,
+        status: 'confirmada'
+      }
+    ],
+    asPassenger: [
+      {
+        id: 2,
+        game: 'Krona x ACBF',
+        date: '2025-06-03',
+        driver: 'Maria Santos',
+        status: 'pendente'
+      }
+    ]
   };
+
+  const myRides = [
+    {
+      id: 1,
+      game: 'JEC x Chapecoense',
+      date: '2025-06-01',
+      time: '16:00',
+      role: 'motorista',
+      passengers: 2,
+      maxPassengers: 3,
+      status: 'confirmada'
+    },
+    {
+      id: 2,
+      game: 'Krona x ACBF',
+      date: '2025-06-03',
+      time: '20:00',
+      role: 'passageiro',
+      driver: 'Maria Santos',
+      status: 'pendente'
+    },
+    {
+      id: 3,
+      game: 'JEC x Avaí',
+      date: '2025-05-15',
+      time: '19:30',
+      role: 'motorista',
+      passengers: 3,
+      maxPassengers: 3,
+      status: 'finalizada'
+    }
+  ];
 
   // Navigation Component
   const Navigation = () => (
@@ -110,7 +124,7 @@ const TorcidaSolidariaChatApp = () => {
           <div className="bg-white text-red-600 p-2 rounded-full">
             <Car className="w-6 h-6" />
           </div>
-          <h1 className="text-xl font-bold">Torcida Solidária</h1>
+          <h1 className="text-xl font-bold">JECarona</h1>
         </div>
         
         <div className="flex items-center space-x-6">
@@ -125,21 +139,6 @@ const TorcidaSolidariaChatApp = () => {
           </button>
           
           <button 
-            onClick={() => setCurrentScreen('chat')}
-            className={`flex items-center space-x-2 px-3 py-2 rounded transition-colors ${
-              currentScreen === 'chat' ? 'bg-red-700' : 'hover:bg-red-700'
-            }`}
-          >
-            <MessageCircle className="w-4 h-4" />
-            <span>Chat</span>
-            {activeChats.pending > 0 && (
-              <span className="bg-yellow-400 text-red-800 text-xs rounded-full px-2 py-1">
-                {activeChats.pending}
-              </span>
-            )}
-          </button>
-          
-          <button 
             onClick={() => setCurrentScreen('calendar')}
             className={`flex items-center space-x-2 px-3 py-2 rounded transition-colors ${
               currentScreen === 'calendar' ? 'bg-red-700' : 'hover:bg-red-700'
@@ -147,6 +146,16 @@ const TorcidaSolidariaChatApp = () => {
           >
             <Calendar className="w-4 h-4" />
             <span>Calendário</span>
+          </button>
+          
+          <button 
+            onClick={() => setCurrentScreen('rides')}
+            className={`flex items-center space-x-2 px-3 py-2 rounded transition-colors ${
+              currentScreen === 'rides' ? 'bg-red-700' : 'hover:bg-red-700'
+            }`}
+          >
+            <Car className="w-4 h-4" />
+            <span>Minhas Caronas</span>
           </button>
           
           <div className="flex items-center space-x-2 ml-6">
@@ -162,8 +171,8 @@ const TorcidaSolidariaChatApp = () => {
     </nav>
   );
 
-  // Chat Screen
-  const ChatScreen = () => (
+  // Dashboard Screen
+  const DashboardScreen = () => (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-red-500 to-black text-white p-6 rounded-lg shadow-lg">
@@ -174,104 +183,69 @@ const TorcidaSolidariaChatApp = () => {
             className="w-16 h-16 rounded-full border-4 border-white"
           />
           <div>
-            <h2 className="text-2xl font-bold">Central de Conversas</h2>
+            <h2 className="text-2xl font-bold">Bem-vindo, {user.name}!</h2>
             <div className="flex items-center space-x-4 mt-2">
               <div className="flex items-center space-x-1">
-                <MessageCircle className="w-4 h-4" />
-                <span>{activeChats.total} conversas ativas</span>
+                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                <span>{user.rating}</span>
               </div>
               <span>•</span>
-              <div className="flex items-center space-x-1">
-                <Bell className="w-4 h-4" />
-                <span>{activeChats.pending} pendentes</span>
-              </div>
+              <span>{user.totalRides} caronas realizadas</span>
             </div>
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Conversations List */}
-        <div className="lg:col-span-1">
+        {/* Próximos Jogos */}
+        <div className="lg:col-span-2">
           <div className="bg-white rounded-lg shadow-lg p-6">
             <h3 className="text-xl font-bold mb-4 flex items-center">
-              <Users className="w-5 h-5 mr-2 text-red-600" />
-              Minhas Conversas
+              <Calendar className="w-5 h-5 mr-2 text-red-600" />
+              Próximos Jogos
             </h3>
             
-            {/* Search */}
-            <div className="mb-4">
-              <div className="relative">
-                <Search className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
-                <input 
-                  type="text" 
-                  placeholder="Buscar conversas..."
-                  className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                />
-              </div>
-            </div>
-            
             <div className="space-y-4">
-              {chats.map(chat => (
-                <div 
-                  key={chat.id} 
-                  onClick={() => setSelectedChat(chat)}
-                  className={`border rounded-lg p-4 cursor-pointer transition-all hover:shadow-md ${
-                    selectedChat?.id === chat.id 
-                      ? 'border-red-500 bg-red-50 shadow-md' 
-                      : 'border-gray-200 hover:border-gray-300'
-                  }`}
-                >
-                  <div className="flex items-start space-x-3">
-                    <img 
-                      src={chat.avatar} 
-                      alt={chat.name}
-                      className="w-12 h-12 rounded-full border-2 border-gray-200"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex justify-between items-start mb-2">
-                        <h4 className="font-semibold text-gray-900 truncate">{chat.name}</h4>
-                        <span className="text-xs text-gray-500">{chat.time}</span>
-                      </div>
-                      
-                      <div className="flex items-center space-x-2 mb-2">
-                        <div className="flex items-center space-x-1">
-                          <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                          <span className="text-xs text-gray-600">{chat.rating}</span>
-                        </div>
-                        <span className="text-gray-400">•</span>
-                        <span className="text-xs text-gray-600">{chat.neighborhood}</span>
-                      </div>
-                      
-                      <p className="text-sm text-gray-600 font-medium mb-2">{chat.game}</p>
-                      <div className="flex items-center space-x-2 text-xs text-gray-500 mb-2">
-                        <Calendar className="w-3 h-3" />
-                        <span>{new Date(chat.gameDate).toLocaleDateString('pt-BR')}</span>
-                        <Clock className="w-3 h-3 ml-2" />
-                        <span>{chat.gameTime}</span>
-                      </div>
-                      
-                      <p className="text-sm text-gray-500 truncate mb-3">{chat.lastMessage}</p>
-                      
-                      <div className="flex justify-between items-center">
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                          chat.status === 'confirmada' ? 'bg-green-100 text-green-800' :
-                          chat.status === 'pendente' ? 'bg-yellow-100 text-yellow-800' :
-                          chat.status === 'negociando' ? 'bg-blue-100 text-blue-800' :
-                          'bg-red-100 text-red-800'
-                        }`}>
-                          {chat.status === 'confirmada' ? '✅ Confirmada' :
-                           chat.status === 'pendente' ? '⏳ Pendente' :
-                           chat.status === 'negociando' ? '💬 Negociando' :
-                           '❌ Cancelada'}
+              {upcomingGames.map(game => (
+                <div key={game.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <h4 className="font-semibold text-lg">
+                        {game.team} x {game.opponent}
+                      </h4>
+                      <div className="flex items-center space-x-4 text-gray-600 text-sm mt-1">
+                        <span className="flex items-center">
+                          <Calendar className="w-4 h-4 mr-1" />
+                          {new Date(game.date).toLocaleDateString('pt-BR')}
                         </span>
-                        {chat.unread > 0 && (
-                          <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1 min-w-[20px] text-center">
-                            {chat.unread}
-                          </span>
-                        )}
+                        <span className="flex items-center">
+                          <Clock className="w-4 h-4 mr-1" />
+                          {game.time}
+                        </span>
+                        <span className="flex items-center">
+                          <MapPin className="w-4 h-4 mr-1" />
+                          {game.location}
+                        </span>
                       </div>
                     </div>
+                    <span className={`px-2 py-1 rounded text-xs font-medium ${
+                      game.type === 'Casa' 
+                        ? 'bg-red-100 text-red-800' 
+                        : 'bg-black text-white'
+                    }`}>
+                      {game.type}
+                    </span>
+                  </div>
+                  
+                  <div className="flex space-x-3">
+                    <button className="flex-1 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors flex items-center justify-center">
+                      <Car className="w-4 h-4 mr-2" />
+                      Oferecer Carona
+                    </button>
+                    <button className="flex-1 bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition-colors flex items-center justify-center">
+                      <Search className="w-4 h-4 mr-2" />
+                      Buscar Carona
+                    </button>
                   </div>
                 </div>
               ))}
@@ -279,159 +253,390 @@ const TorcidaSolidariaChatApp = () => {
           </div>
         </div>
 
-        {/* Chat Interface */}
-        <div className="lg:col-span-2">
-          <div className="bg-white rounded-lg shadow-lg h-96 flex flex-col">
-            {selectedChat ? (
-              <>
-                {/* Chat Header */}
-                <div className="p-4 border-b bg-black text-white rounded-t-lg">
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center space-x-3">
-                      <img 
-                        src={selectedChat.avatar} 
-                        alt={selectedChat.name}
-                        className="w-12 h-12 rounded-full border-2 border-white"
-                      />
-                      <div>
-                        <h3 className="font-bold text-lg">{selectedChat.name}</h3>
-                        <div className="flex items-center space-x-4 text-sm text-gray-300">
-                          <div className="flex items-center space-x-1">
-                            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                            <span>{selectedChat.rating}</span>
-                          </div>
-                          <div className="flex items-center space-x-1">
-                            <MapPin className="w-4 h-4" />
-                            <span>{selectedChat.neighborhood}</span>
-                          </div>
-                        </div>
-                        <p className="text-gray-300 text-sm mt-1">{selectedChat.game}</p>
-                      </div>
-                    </div>
-                    
-                    {selectedChat.status === 'pendente' && (
-                      <button className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors flex items-center font-medium">
-                        <Check className="w-5 h-5 mr-2" />
-                        Confirmar Carona
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                {/* Messages Area */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
-                  {messages.map(message => (
-                    <div key={message.id} className={`flex ${
-                      message.sender === 'me' ? 'justify-end' : 'justify-start'
-                    }`}>
-                      <div className={`max-w-xs lg:max-w-md px-4 py-3 rounded-lg ${
-                        message.sender === 'me' 
-                          ? 'bg-red-600 text-white' 
-                          : 'bg-white text-gray-800 border shadow-sm'
+        {/* Caronas Ativas */}
+        <div className="space-y-4">
+          {/* Como Motorista */}
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h3 className="text-lg font-bold mb-4 flex items-center">
+              <Car className="w-5 h-5 mr-2 text-red-600" />
+              Como Motorista
+            </h3>
+            
+            {activeRides.asDriver.length > 0 ? (
+              <div className="space-y-3">
+                {activeRides.asDriver.map(ride => (
+                  <div key={ride.id} className="border rounded-lg p-3">
+                    <h4 className="font-medium">{ride.game}</h4>
+                    <p className="text-sm text-gray-600">
+                      {new Date(ride.date).toLocaleDateString('pt-BR')}
+                    </p>
+                    <div className="flex items-center justify-between mt-2">
+                      <span className="text-sm flex items-center">
+                        <Users className="w-4 h-4 mr-1" />
+                        {ride.passengers}/{ride.maxPassengers}
+                      </span>
+                      <span className={`px-2 py-1 rounded text-xs ${
+                        ride.status === 'confirmada' 
+                          ? 'bg-red-100 text-red-800'
+                          : 'bg-yellow-100 text-yellow-800'
                       }`}>
-                        <p className="text-sm leading-relaxed">{message.text}</p>
-                        <p className={`text-xs mt-2 ${
-                          message.sender === 'me' ? 'text-red-100' : 'text-gray-500'
-                        }`}>
-                          {message.time}
-                        </p>
-                      </div>
+                        {ride.status}
+                      </span>
                     </div>
-                  ))}
-                </div>
-
-                {/* Message Input */}
-                <div className="p-4 border-t bg-white rounded-b-lg">
-                  <div className="flex space-x-3">
-                    <input
-                      type="text"
-                      value={newMessage}
-                      onChange={(e) => setNewMessage(e.target.value)}
-                      placeholder="Digite sua mensagem..."
-                      className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                      onKeyPress={(e) => {
-                        if (e.key === 'Enter') {
-                          // Aqui seria a integração com API: POST /chat/{ride_id}
-                          console.log('Enviando mensagem:', newMessage);
-                          setNewMessage('');
-                        }
-                      }}
-                    />
-                    <button 
-                      onClick={() => {
-                        // Aqui seria a integração com API: POST /chat/{ride_id}
-                        console.log('Enviando mensagem:', newMessage);
-                        setNewMessage('');
-                      }}
-                      className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center font-medium"
-                    >
-                      <Send className="w-4 h-4 mr-2" />
-                      Enviar
-                    </button>
                   </div>
-                  <p className="text-xs text-gray-500 mt-2">
-                    Pressione Enter para enviar • API: GET/POST /chat/{selectedChat.id}
-                  </p>
-                </div>
-              </>
-            ) : (
-              <div className="flex-1 flex items-center justify-center bg-gray-50 rounded-lg">
-                <div className="text-center text-gray-500 max-w-sm">
-                  <MessageCircle className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                  <h3 className="text-lg font-semibold mb-2 text-gray-700">Selecione uma conversa</h3>
-                  <p className="text-gray-600 leading-relaxed">
-                    Escolha uma conversa ao lado para começar a trocar mensagens com outros torcedores 
-                    e organizar suas caronas.
-                  </p>
-                </div>
+                ))}
               </div>
+            ) : (
+              <p className="text-gray-500 text-sm">Nenhuma carona ativa como motorista</p>
             )}
           </div>
-        </div>
-      </div>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-black text-white p-4 rounded-lg">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-300 text-sm">Conversas Ativas</p>
-              <p className="text-2xl font-bold">{activeChats.total}</p>
-            </div>
-            <MessageCircle className="w-8 h-8 text-red-400" />
-          </div>
-        </div>
-        
-        <div className="bg-black text-white p-4 rounded-lg">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-300 text-sm">Caronas Pendentes</p>
-              <p className="text-2xl font-bold">{activeChats.pending}</p>
-            </div>
-            <Clock className="w-8 h-8 text-yellow-400" />
-          </div>
-        </div>
-        
-        <div className="bg-black text-white p-4 rounded-lg">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-300 text-sm">Caronas Confirmadas</p>
-              <p className="text-2xl font-bold">{activeChats.confirmed}</p>
-            </div>
-            <Check className="w-8 h-8 text-green-400" />
+          {/* Como Passageiro */}
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h3 className="text-lg font-bold mb-4 flex items-center">
+              <User className="w-5 h-5 mr-2 text-black" />
+              Como Passageiro
+            </h3>
+            
+            {activeRides.asPassenger.length > 0 ? (
+              <div className="space-y-3">
+                {activeRides.asPassenger.map(ride => (
+                  <div key={ride.id} className="border rounded-lg p-3">
+                    <h4 className="font-medium">{ride.game}</h4>
+                    <p className="text-sm text-gray-600">
+                      Motorista: {ride.driver}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      {new Date(ride.date).toLocaleDateString('pt-BR')}
+                    </p>
+                    <span className={`inline-block px-2 py-1 rounded text-xs mt-2 ${
+                      ride.status === 'confirmada' 
+                        ? 'bg-red-100 text-red-800'
+                        : 'bg-yellow-100 text-yellow-800'
+                    }`}>
+                      {ride.status}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-500 text-sm">Nenhuma carona ativa como passageiro</p>
+            )}
           </div>
         </div>
       </div>
     </div>
   );
+
+  // Calendar Screen
+  const CalendarScreen = () => {
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+    
+    const getDaysInMonth = (month, year) => {
+      return new Date(year, month + 1, 0).getDate();
+    };
+    
+    const getFirstDayOfMonth = (month, year) => {
+      return new Date(year, month, 1).getDay();
+    };
+    
+    const renderCalendar = () => {
+      const daysInMonth = getDaysInMonth(currentMonth, currentYear);
+      const firstDay = getFirstDayOfMonth(currentMonth, currentYear);
+      const days = [];
+      
+      // Empty cells for days before the first day of the month
+      for (let i = 0; i < firstDay; i++) {
+        days.push(<div key={`empty-${i}`} className="p-2"></div>);
+      }
+      
+      // Days of the month
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateString = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const hasGame = upcomingGames.some(game => game.date === dateString);
+        
+        days.push(
+          <div key={day} className={`p-2 border rounded cursor-pointer hover:bg-gray-50 ${
+            hasGame ? 'bg-red-100 border-red-300' : ''
+          }`}>
+            <span className="text-sm font-medium">{day}</span>
+            {hasGame && (
+              <div className="w-2 h-2 bg-red-500 rounded-full mt-1"></div>
+            )}
+          </div>
+        );
+      }
+      
+      return days;
+    };
+
+    const filteredGames = upcomingGames.filter(game => {
+      if (selectedTeam === 'ambos') return true;
+      return game.team.toLowerCase() === selectedTeam.toLowerCase();
+    });
+
+    return (
+      <div className="max-w-6xl mx-auto p-6">
+        <div className="bg-white rounded-lg shadow-lg p-6">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold flex items-center">
+              <Calendar className="w-6 h-6 mr-2 text-red-600" />
+              Calendário de Jogos
+            </h2>
+            
+            <div className="flex items-center space-x-4">
+              <select 
+                value={selectedTeam}
+                onChange={(e) => setSelectedTeam(e.target.value)}
+                className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+              >
+                <option value="ambos">Ambos os times</option>
+                <option value="jec">JEC</option>
+                <option value="krona">Krona</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Calendar */}
+            <div className="lg:col-span-2">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold">
+                  {new Date(currentYear, currentMonth).toLocaleDateString('pt-BR', { 
+                    month: 'long', 
+                    year: 'numeric' 
+                  })}
+                </h3>
+                <div className="flex space-x-2">
+                  <button className="p-2 hover:bg-gray-100 rounded">
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <button className="p-2 hover:bg-gray-100 rounded">
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-7 gap-1 mb-2">
+                {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map(day => (
+                  <div key={day} className="p-2 text-center text-sm font-medium text-gray-600">
+                    {day}
+                  </div>
+                ))}
+              </div>
+              
+              <div className="grid grid-cols-7 gap-1">
+                {renderCalendar()}
+              </div>
+            </div>
+
+            {/* Games List */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Próximos Jogos</h3>
+              <div className="space-y-3">
+                {filteredGames.map(game => (
+                  <div key={game.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer">
+                    <div className="flex justify-between items-start mb-2">
+                      <h4 className="font-medium">{game.team} x {game.opponent}</h4>
+                      <span className={`px-2 py-1 rounded text-xs font-medium ${
+                        game.type === 'Casa' 
+                          ? 'bg-red-100 text-red-800' 
+                          : 'bg-black text-white'
+                      }`}>
+                        {game.type}
+                      </span>
+                    </div>
+                    
+                    <div className="text-sm text-gray-600 space-y-1">
+                      <div className="flex items-center">
+                        <Calendar className="w-3 h-3 mr-1" />
+                        {new Date(game.date).toLocaleDateString('pt-BR')}
+                      </div>
+                      <div className="flex items-center">
+                        <Clock className="w-3 h-3 mr-1" />
+                        {game.time}
+                      </div>
+                      <div className="flex items-center">
+                        <MapPin className="w-3 h-3 mr-1" />
+                        {game.location}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // My Rides Screen
+  const MyRidesScreen = () => {
+    const [activeTab, setActiveTab] = useState('motorista');
+
+    const driverRides = myRides.filter(ride => ride.role === 'motorista');
+    const passengerRides = myRides.filter(ride => ride.role === 'passageiro');
+
+    const getStatusColor = (status) => {
+      switch (status) {
+        case 'confirmada':
+          return 'bg-red-100 text-red-800';
+        case 'pendente':
+          return 'bg-yellow-100 text-yellow-800';
+        case 'cancelada':
+          return 'bg-gray-100 text-gray-800';
+        case 'finalizada':
+          return 'bg-black text-white';
+        default:
+          return 'bg-gray-100 text-gray-800';
+      }
+    };
+
+    return (
+      <div className="max-w-6xl mx-auto p-6">
+        <div className="bg-white rounded-lg shadow-lg p-6">
+          <h2 className="text-2xl font-bold mb-6 flex items-center">
+            <Car className="w-6 h-6 mr-2 text-red-600" />
+            Minhas Caronas
+          </h2>
+
+          {/* Tabs */}
+          <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg mb-6">
+            <button
+              onClick={() => setActiveTab('motorista')}
+              className={`flex-1 py-2 px-4 rounded-md transition-colors ${
+                activeTab === 'motorista'
+                  ? 'bg-white text-red-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-800'
+              }`}
+            >
+              Como Motorista
+            </button>
+            <button
+              onClick={() => setActiveTab('passageiro')}
+              className={`flex-1 py-2 px-4 rounded-md transition-colors ${
+                activeTab === 'passageiro'
+                  ? 'bg-white text-black shadow-sm'
+                  : 'text-gray-600 hover:text-gray-800'
+              }`}
+            >
+              Como Passageiro
+            </button>
+          </div>
+
+          {/* Content */}
+          <div className="space-y-4">
+            {activeTab === 'motorista' ? (
+              driverRides.length > 0 ? (
+                driverRides.map(ride => (
+                  <div key={ride.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div className="flex justify-between items-start mb-3">
+                      <div>
+                        <h3 className="font-semibold text-lg">{ride.game}</h3>
+                        <div className="flex items-center space-x-4 text-gray-600 text-sm mt-1">
+                          <span className="flex items-center">
+                            <Calendar className="w-4 h-4 mr-1" />
+                            {new Date(ride.date).toLocaleDateString('pt-BR')}
+                          </span>
+                          <span className="flex items-center">
+                            <Clock className="w-4 h-4 mr-1" />
+                            {ride.time}
+                          </span>
+                          <span className="flex items-center">
+                            <Users className="w-4 h-4 mr-1" />
+                            {ride.passengers}/{ride.maxPassengers} passageiros
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2">
+                        <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(ride.status)}`}>
+                          {ride.status}
+                        </span>
+                        
+                        {ride.status !== 'finalizada' && (
+                          <div className="flex space-x-2">
+                            <button className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                              <Edit className="w-4 h-4" />
+                            </button>
+                            <button className="p-2 text-black hover:bg-gray-50 rounded-lg transition-colors">
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <Car className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                  <p>Você ainda não ofereceu nenhuma carona</p>
+                </div>
+              )
+            ) : (
+              passengerRides.length > 0 ? (
+                passengerRides.map(ride => (
+                  <div key={ride.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div className="flex justify-between items-start mb-3">
+                      <div>
+                        <h3 className="font-semibold text-lg">{ride.game}</h3>
+                        <div className="flex items-center space-x-4 text-gray-600 text-sm mt-1">
+                          <span className="flex items-center">
+                            <Calendar className="w-4 h-4 mr-1" />
+                            {new Date(ride.date).toLocaleDateString('pt-BR')}
+                          </span>
+                          <span className="flex items-center">
+                            <Clock className="w-4 h-4 mr-1" />
+                            {ride.time}
+                          </span>
+                          <span className="flex items-center">
+                            <User className="w-4 h-4 mr-1" />
+                            Motorista: {ride.driver}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2">
+                        <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(ride.status)}`}>
+                          {ride.status}
+                        </span>
+                        
+                        {ride.status !== 'finalizada' && (
+                          <button className="p-2 text-black hover:bg-gray-50 rounded-lg transition-colors">
+                            <X className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <User className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                  <p>Você ainda não solicitou nenhuma carona</p>
+                </div>
+              )
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   // Main render
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation />
-      <ChatScreen />
+      
+      {currentScreen === 'dashboard' && <DashboardScreen />}
+      {currentScreen === 'calendar' && <CalendarScreen />}
+      {currentScreen === 'rides' && <MyRidesScreen />}
     </div>
   );
 };
 
-export default TorcidaSolidariaChatApp;
+export default JECaronaApp;
