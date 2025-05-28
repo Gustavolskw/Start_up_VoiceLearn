@@ -1,23 +1,23 @@
 import React, { useState } from 'react';
 import { 
   Shield, 
-  Plus, 
-  Edit, 
-  Trash2, 
-  Eye, 
-  EyeOff,
+  AlertTriangle,
+  Eye,
+  UserX,
+  X,
   Calendar,
-  MapPin,
-  Clock,
+  User,
   Home,
   Car,
   MessageCircle,
-  AlertCircle
+  Clock,
+  Star,
+  Filter
 } from 'lucide-react';
 
-const TorcidaSolidariaSimpleGamesList = () => {
-  const [currentScreen, setCurrentScreen] = useState('games-list');
-  const [showDeleteModal, setShowDeleteModal] = useState(null);
+const TorcidaSolidariaSimpleReports = () => {
+  const [currentScreen, setCurrentScreen] = useState('reports');
+  const [filterStatus, setFilterStatus] = useState('pendentes');
 
   // Mock data
   const user = {
@@ -27,85 +27,76 @@ const TorcidaSolidariaSimpleGamesList = () => {
     totalRides: 23
   };
 
-  const games = [
+  const reports = [
     {
       id: 1,
-      name: 'JEC x Chapecoense',
-      type: 'JEC',
-      date: '2025-06-01',
-      time: '16:00',
-      location: 'Arena Joinville',
-      address: 'Rua Albano Schmidt, 3333 - Joinville/SC',
-      status: 'ativo'
+      reportedUser: 'Carlos Lima',
+      reportedBy: 'Maria Santos',
+      reason: 'Chegou atrasado e foi mal educado',
+      rideDate: '2025-05-28',
+      game: 'JEC x Chapecoense',
+      status: 'pendente',
+      severity: 'media',
+      details: 'Motorista chegou 30 minutos atrasado e não avisou. Durante a viagem foi grosseiro com os passageiros.'
     },
     {
       id: 2,
-      name: 'Krona x ACBF',
-      type: 'Krona',
-      date: '2025-06-03',
-      time: '20:00',
-      location: 'Centreventos',
-      address: 'Rua XV de Novembro, 777 - Joinville/SC',
-      status: 'ativo'
+      reportedUser: 'Ana Oliveira',
+      reportedBy: 'Pedro Costa',
+      reason: 'Cancelou a carona em cima da hora',
+      rideDate: '2025-05-25',
+      game: 'Krona x ACBF',
+      status: 'pendente',
+      severity: 'baixa',
+      details: 'Cancelou a carona 2 horas antes do jogo sem dar explicação adequada.'
     },
     {
       id: 3,
-      name: 'JEC x Avaí',
-      type: 'JEC',
-      date: '2025-06-08',
-      time: '19:30',
-      location: 'Ressacada',
-      address: 'Florianópolis - SC',
-      status: 'inativo'
+      reportedUser: 'Fernanda Silva',
+      reportedBy: 'Lucas Santos',
+      reason: 'Comportamento inadequado',
+      rideDate: '2025-05-20',
+      game: 'JEC x Avaí',
+      status: 'resolvido',
+      severity: 'alta',
+      details: 'Usuário teve comportamento agressivo e desrespeitoso durante toda a viagem.'
     },
     {
       id: 4,
-      name: 'Krona x Carlos Barbosa',
-      type: 'Krona',
-      date: '2025-06-12',
-      time: '21:00',
-      location: 'Centreventos',
-      address: 'Rua XV de Novembro, 777 - Joinville/SC',
-      status: 'ativo'
-    },
-    {
-      id: 5,
-      name: 'JEC x Figueirense',
-      type: 'JEC',
-      date: '2025-06-15',
-      time: '15:30',
-      location: 'Arena Joinville',
-      address: 'Rua Albano Schmidt, 3333 - Joinville/SC',
-      status: 'ativo'
+      reportedUser: 'Roberto Alves',
+      reportedBy: 'Carla Mendes',
+      reason: 'Não compareceu',
+      rideDate: '2025-05-18',
+      game: 'JEC x Criciúma',
+      status: 'ignorado',
+      severity: 'media',
+      details: 'Combinamos a carona mas o motorista não apareceu no local combinado.'
     }
   ];
 
-  const stats = {
-    total: games.length,
-    active: games.filter(g => g.status === 'ativo').length,
-    inactive: games.filter(g => g.status === 'inativo').length
-  };
+  const filteredReports = reports.filter(report => {
+    if (filterStatus === 'todos') return true;
+    return report.status === filterStatus;
+  });
 
   // Handle actions
-  const handleEdit = (gameId) => {
-    console.log('API: PATCH /admin/games/' + gameId);
-    alert('Abrindo tela de edição do jogo...');
+  const handleViewDetails = (reportId) => {
+    console.log('Visualizando detalhes da denúncia:', reportId);
+    alert('Abrindo detalhes da carona...');
   };
 
-  const handleToggleStatus = (gameId, currentStatus) => {
-    const newStatus = currentStatus === 'ativo' ? 'inativo' : 'ativo';
-    console.log(`API: PATCH /admin/games/${gameId} - Status: ${newStatus}`);
-    alert(`Jogo ${newStatus === 'ativo' ? 'ativado' : 'desativado'} com sucesso!`);
+  const handleSuspendUser = (reportId) => {
+    console.log('Suspendendo usuário da denúncia:', reportId);
+    if (confirm('Tem certeza que deseja suspender temporariamente este usuário?')) {
+      alert('Usuário suspenso por 7 dias!');
+    }
   };
 
-  const handleDelete = (gameId) => {
-    console.log('API: DELETE /admin/games/' + gameId);
-    alert('Jogo excluído com sucesso!');
-    setShowDeleteModal(null);
-  };
-
-  const handleNewGame = () => {
-    setCurrentScreen('add-game');
+  const handleIgnoreReport = (reportId) => {
+    console.log('Ignorando denúncia:', reportId);
+    if (confirm('Tem certeza que deseja ignorar esta denúncia?')) {
+      alert('Denúncia marcada como ignorada!');
+    }
   };
 
   // Navigation Component
@@ -141,13 +132,13 @@ const TorcidaSolidariaSimpleGamesList = () => {
           </button>
           
           <button 
-            onClick={() => setCurrentScreen('games-list')}
+            onClick={() => setCurrentScreen('reports')}
             className={`flex items-center space-x-2 px-3 py-2 rounded transition-colors ${
-              currentScreen === 'games-list' ? 'bg-red-700' : 'hover:bg-red-700'
+              currentScreen === 'reports' ? 'bg-red-700' : 'hover:bg-red-700'
             }`}
           >
             <Shield className="w-4 h-4" />
-            <span>Administração</span>
+            <span>Moderação</span>
           </button>
           
           <div className="flex items-center space-x-2 ml-6">
@@ -163,202 +154,174 @@ const TorcidaSolidariaSimpleGamesList = () => {
     </nav>
   );
 
-  // Delete Modal
-  const DeleteModal = ({ game }) => (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-        <div className="flex items-center space-x-3 mb-4">
-          <AlertCircle className="w-8 h-8 text-red-600" />
-          <h3 className="text-lg font-bold text-gray-800">Confirmar Exclusão</h3>
-        </div>
-        
-        <p className="text-gray-600 mb-6">
-          Tem certeza que deseja excluir o jogo <strong>"{game.name}"</strong>?
-        </p>
-        
-        <div className="flex space-x-3">
-          <button 
-            onClick={() => setShowDeleteModal(null)}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-          >
-            Cancelar
-          </button>
-          <button 
-            onClick={() => handleDelete(game.id)}
-            className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-          >
-            Excluir
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-
-  // Games List Screen
-  const GamesListScreen = () => (
+  // Reports Screen
+  const ReportsScreen = () => (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-red-500 to-black text-white p-6 rounded-lg shadow-lg">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <Shield className="w-12 h-12" />
-            <div>
-              <h2 className="text-2xl font-bold">Lista de Jogos</h2>
-              <p className="text-red-100 mt-1">
-                Gerencie todos os eventos esportivos cadastrados
-              </p>
-            </div>
+        <div className="flex items-center space-x-4">
+          <AlertTriangle className="w-12 h-12" />
+          <div>
+            <h2 className="text-2xl font-bold">Denúncias e Avaliações</h2>
+            <p className="text-red-100 mt-1">
+              Acompanhe e responda a denúncias entre usuários
+            </p>
           </div>
-          
-          <button 
-            onClick={handleNewGame}
-            className="bg-white text-red-600 px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors flex items-center font-medium"
+        </div>
+      </div>
+
+      {/* Stats and Filter */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-black text-white p-4 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-300 text-sm">Total</p>
+              <p className="text-2xl font-bold">{reports.length}</p>
+            </div>
+            <AlertTriangle className="w-8 h-8 text-red-400" />
+          </div>
+        </div>
+        
+        <div className="bg-black text-white p-4 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-300 text-sm">Pendentes</p>
+              <p className="text-2xl font-bold">{reports.filter(r => r.status === 'pendente').length}</p>
+            </div>
+            <Clock className="w-8 h-8 text-yellow-400" />
+          </div>
+        </div>
+        
+        <div className="bg-black text-white p-4 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-300 text-sm">Resolvidos</p>
+              <p className="text-2xl font-bold">{reports.filter(r => r.status === 'resolvido').length}</p>
+            </div>
+            <Shield className="w-8 h-8 text-green-400" />
+          </div>
+        </div>
+        
+        <div className="bg-white p-4 rounded-lg shadow-lg">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Filtrar por Status
+          </label>
+          <select
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
           >
-            <Plus className="w-5 h-5 mr-2" />
-            Novo Jogo
-          </button>
+            <option value="todos">Todos</option>
+            <option value="pendente">Pendentes</option>
+            <option value="resolvido">Resolvidos</option>
+            <option value="ignorado">Ignorados</option>
+          </select>
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-black text-white p-6 rounded-lg">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-300 text-sm">Total de Jogos</p>
-              <p className="text-2xl font-bold">{stats.total}</p>
-            </div>
-            <Calendar className="w-8 h-8 text-red-400" />
-          </div>
-        </div>
-        
-        <div className="bg-black text-white p-6 rounded-lg">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-300 text-sm">Jogos Ativos</p>
-              <p className="text-2xl font-bold">{stats.active}</p>
-            </div>
-            <Eye className="w-8 h-8 text-green-400" />
-          </div>
-        </div>
-        
-        <div className="bg-black text-white p-6 rounded-lg">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-300 text-sm">Jogos Inativos</p>
-              <p className="text-2xl font-bold">{stats.inactive}</p>
-            </div>
-            <EyeOff className="w-8 h-8 text-gray-400" />
-          </div>
-        </div>
-      </div>
-
-      {/* Games Table */}
+      {/* Reports List */}
       <div className="bg-white rounded-lg shadow-lg p-6">
-        <h3 className="text-xl font-bold mb-6 flex items-center">
-          <Calendar className="w-5 h-5 mr-2 text-red-600" />
-          Eventos Cadastrados
+        <h3 className="text-xl font-bold mb-4 flex items-center">
+          <AlertTriangle className="w-5 h-5 mr-2 text-red-600" />
+          Lista de Denúncias
         </h3>
-
-        {/* API Info */}
-        <div className="mb-4 text-sm text-gray-600 bg-gray-50 p-3 rounded">
-          <strong>APIs:</strong> GET /admin/games • PATCH /admin/games/{"{id}"} • DELETE /admin/games/{"{id}"}
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="bg-black text-white">
-                <th className="border border-gray-300 px-4 py-3 text-left">Nome do Evento</th>
-                <th className="border border-gray-300 px-4 py-3 text-left">Tipo</th>
-                <th className="border border-gray-300 px-4 py-3 text-left">Data e Hora</th>
-                <th className="border border-gray-300 px-4 py-3 text-left">Local</th>
-                <th className="border border-gray-300 px-4 py-3 text-left">Status</th>
-                <th className="border border-gray-300 px-4 py-3 text-center">Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {games.map((game, index) => (
-                <tr key={game.id} className={`hover:bg-gray-50 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-25'}`}>
-                  <td className="border border-gray-300 px-4 py-3 font-medium">
-                    {game.name}
-                  </td>
-                  
-                  <td className="border border-gray-300 px-4 py-3">
+        
+        <div className="space-y-4">
+          {filteredReports.map(report => (
+            <div key={report.id} className="border border-gray-200 rounded-lg p-4">
+              <div className="flex justify-between items-start mb-3">
+                <div className="flex-1">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <h4 className="font-semibold text-gray-800">
+                      Usuário: {report.reportedUser}
+                    </h4>
                     <span className={`px-2 py-1 rounded text-xs font-medium ${
-                      game.type === 'JEC' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'
+                      report.severity === 'alta' ? 'bg-red-100 text-red-800' :
+                      report.severity === 'media' ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-blue-100 text-blue-800'
                     }`}>
-                      {game.type}
+                      {report.severity === 'alta' ? '🔴 Alta' :
+                       report.severity === 'media' ? '🟡 Média' : '🔵 Baixa'}
                     </span>
-                  </td>
-                  
-                  <td className="border border-gray-300 px-4 py-3">
-                    <div className="text-sm">
-                      <div className="flex items-center">
-                        <Calendar className="w-3 h-3 mr-1" />
-                        {new Date(game.date).toLocaleDateString('pt-BR')}
-                      </div>
-                      <div className="flex items-center mt-1 text-gray-600">
-                        <Clock className="w-3 h-3 mr-1" />
-                        {game.time}
-                      </div>
-                    </div>
-                  </td>
-                  
-                  <td className="border border-gray-300 px-4 py-3">
-                    <div className="text-sm">
-                      <div className="font-medium">{game.location}</div>
-                      <div className="text-gray-600 text-xs mt-1 flex items-center">
-                        <MapPin className="w-3 h-3 mr-1" />
-                        {game.address}
-                      </div>
-                    </div>
-                  </td>
-                  
-                  <td className="border border-gray-300 px-4 py-3">
                     <span className={`px-2 py-1 rounded text-xs font-medium ${
-                      game.status === 'ativo' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                      report.status === 'pendente' ? 'bg-yellow-100 text-yellow-800' :
+                      report.status === 'resolvido' ? 'bg-green-100 text-green-800' :
+                      'bg-gray-100 text-gray-800'
                     }`}>
-                      {game.status === 'ativo' ? '🟢 Ativo' : '🔴 Inativo'}
+                      {report.status}
                     </span>
-                  </td>
+                  </div>
                   
-                  <td className="border border-gray-300 px-4 py-3">
-                    <div className="flex space-x-2 justify-center">
-                      <button 
-                        onClick={() => handleEdit(game.id)}
-                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                        title="Editar"
-                      >
-                        <Edit className="w-4 h-4" />
-                      </button>
-                      
-                      <button 
-                        onClick={() => handleToggleStatus(game.id, game.status)}
-                        className="p-2 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
-                        title={game.status === 'ativo' ? 'Desativar' : 'Ativar'}
-                      >
-                        {game.status === 'ativo' ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      </button>
-                      
-                      <button 
-                        onClick={() => setShowDeleteModal(game)}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Excluir"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600 mb-3">
+                    <div className="flex items-center">
+                      <User className="w-4 h-4 mr-2" />
+                      <span>Denunciado por: {report.reportedBy}</span>
                     </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                    <div className="flex items-center">
+                      <Calendar className="w-4 h-4 mr-2" />
+                      <span>Data: {new Date(report.rideDate).toLocaleDateString('pt-BR')}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <Car className="w-4 h-4 mr-2" />
+                      <span>Jogo: {report.game}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="mb-3">
+                    <p className="font-medium text-gray-800 mb-1">Motivo:</p>
+                    <p className="text-gray-600">{report.reason}</p>
+                  </div>
+                  
+                  <div className="bg-gray-50 p-3 rounded">
+                    <p className="font-medium text-gray-800 mb-1">Detalhes:</p>
+                    <p className="text-gray-600 text-sm">{report.details}</p>
+                  </div>
+                </div>
+              </div>
+              
+              {report.status === 'pendente' && (
+                <div className="flex space-x-3 pt-3 border-t">
+                  <button
+                    onClick={() => handleViewDetails(report.id)}
+                    className="flex items-center px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                  >
+                    <Eye className="w-4 h-4 mr-2" />
+                    Visualizar Detalhes
+                  </button>
+                  
+                  <button
+                    onClick={() => handleSuspendUser(report.id)}
+                    className="flex items-center px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
+                  >
+                    <UserX className="w-4 h-4 mr-2" />
+                    Suspender Temporariamente
+                  </button>
+                  
+                  <button
+                    onClick={() => handleIgnoreReport(report.id)}
+                    className="flex items-center px-3 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm"
+                  >
+                    <X className="w-4 h-4 mr-2" />
+                    Ignorar Denúncia
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
+        
+        {filteredReports.length === 0 && (
+          <div className="text-center py-8">
+            <AlertTriangle className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+            <h3 className="text-lg font-semibold text-gray-700 mb-2">
+              Nenhuma denúncia encontrada
+            </h3>
+            <p className="text-gray-600">
+              Não há denúncias com o status "{filterStatus}" no momento.
+            </p>
+          </div>
+        )}
       </div>
-
-      {/* Delete Modal */}
-      {showDeleteModal && <DeleteModal game={showDeleteModal} />}
     </div>
   );
 
@@ -366,9 +329,9 @@ const TorcidaSolidariaSimpleGamesList = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation />
-      <GamesListScreen />
+      <ReportsScreen />
     </div>
   );
 };
 
-export default TorcidaSolidariaSimpleGamesList;
+export default TorcidaSolidariaSimpleReports;
