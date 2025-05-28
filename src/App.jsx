@@ -1,23 +1,21 @@
 import React, { useState } from 'react';
 import { 
-  Shield, 
-  AlertTriangle,
-  Eye,
-  UserX,
-  X,
+  BarChart3, 
+  Download,
   Calendar,
-  User,
+  MapPin,
+  Users,
   Home,
   Car,
   MessageCircle,
-  Clock,
-  Star,
-  Filter
+  Shield,
+  FileText,
+  PieChart
 } from 'lucide-react';
 
-const TorcidaSolidariaSimpleReports = () => {
-  const [currentScreen, setCurrentScreen] = useState('reports');
-  const [filterStatus, setFilterStatus] = useState('pendentes');
+const TorcidaSolidariaSimpleAnalytics = () => {
+  const [currentScreen, setCurrentScreen] = useState('analytics');
+  const [selectedGame, setSelectedGame] = useState(1);
 
   // Mock data
   const user = {
@@ -27,76 +25,61 @@ const TorcidaSolidariaSimpleReports = () => {
     totalRides: 23
   };
 
-  const reports = [
-    {
-      id: 1,
-      reportedUser: 'Carlos Lima',
-      reportedBy: 'Maria Santos',
-      reason: 'Chegou atrasado e foi mal educado',
-      rideDate: '2025-05-28',
-      game: 'JEC x Chapecoense',
-      status: 'pendente',
-      severity: 'media',
-      details: 'Motorista chegou 30 minutos atrasado e não avisou. Durante a viagem foi grosseiro com os passageiros.'
-    },
-    {
-      id: 2,
-      reportedUser: 'Ana Oliveira',
-      reportedBy: 'Pedro Costa',
-      reason: 'Cancelou a carona em cima da hora',
-      rideDate: '2025-05-25',
-      game: 'Krona x ACBF',
-      status: 'pendente',
-      severity: 'baixa',
-      details: 'Cancelou a carona 2 horas antes do jogo sem dar explicação adequada.'
-    },
-    {
-      id: 3,
-      reportedUser: 'Fernanda Silva',
-      reportedBy: 'Lucas Santos',
-      reason: 'Comportamento inadequado',
-      rideDate: '2025-05-20',
-      game: 'JEC x Avaí',
-      status: 'resolvido',
-      severity: 'alta',
-      details: 'Usuário teve comportamento agressivo e desrespeitoso durante toda a viagem.'
-    },
-    {
-      id: 4,
-      reportedUser: 'Roberto Alves',
-      reportedBy: 'Carla Mendes',
-      reason: 'Não compareceu',
-      rideDate: '2025-05-18',
-      game: 'JEC x Criciúma',
-      status: 'ignorado',
-      severity: 'media',
-      details: 'Combinamos a carona mas o motorista não apareceu no local combinado.'
-    }
+  const games = [
+    { id: 1, name: 'JEC x Chapecoense', date: '2025-06-01', type: 'JEC' },
+    { id: 2, name: 'Krona x ACBF', date: '2025-06-03', type: 'Krona' },
+    { id: 3, name: 'JEC x Avaí', date: '2025-06-08', type: 'JEC' },
+    { id: 4, name: 'Krona x Carlos Barbosa', date: '2025-06-12', type: 'Krona' }
   ];
 
-  const filteredReports = reports.filter(report => {
-    if (filterStatus === 'ignorado') return true;
-    return report.status === filterStatus;
-  });
-
-  // Handle actions
-  const handleViewDetails = (reportId) => {
-    console.log('Visualizando detalhes da denúncia:', reportId);
-    alert('Abrindo detalhes da carona...');
-  };
-
-  const handleSuspendUser = (reportId) => {
-    console.log('Suspendendo usuário da denúncia:', reportId);
-    if (confirm('Tem certeza que deseja suspender temporariamente este usuário?')) {
-      alert('Usuário suspenso por 7 dias!');
+  const gameData = {
+    1: {
+      totalRides: 12,
+      totalPassengers: 35,
+      occupancyRate: 85,
+      neighborhoods: [
+        { name: 'Aventureiro', rides: 4, percentage: 33 },
+        { name: 'Itaum', rides: 3, percentage: 25 },
+        { name: 'América', rides: 2, percentage: 17 },
+        { name: 'Bucarein', rides: 2, percentage: 17 },
+        { name: 'Centro', rides: 1, percentage: 8 }
+      ],
+      ridesDetail: [
+        { driver: 'João Silva', passengers: 3, neighborhood: 'Aventureiro' },
+        { driver: 'Maria Santos', passengers: 2, neighborhood: 'Itaum' },
+        { driver: 'Carlos Lima', passengers: 4, neighborhood: 'América' },
+        { driver: 'Ana Costa', passengers: 3, neighborhood: 'Bucarein' }
+      ]
+    },
+    2: {
+      totalRides: 8,
+      totalPassengers: 22,
+      occupancyRate: 75,
+      neighborhoods: [
+        { name: 'Centro', rides: 3, percentage: 38 },
+        { name: 'Aventureiro', rides: 2, percentage: 25 },
+        { name: 'Itaum', rides: 2, percentage: 25 },
+        { name: 'América', rides: 1, percentage: 12 }
+      ],
+      ridesDetail: [
+        { driver: 'Pedro Costa', passengers: 3, neighborhood: 'Centro' },
+        { driver: 'Fernanda Lima', passengers: 2, neighborhood: 'Aventureiro' },
+        { driver: 'Lucas Santos', passengers: 4, neighborhood: 'Itaum' }
+      ]
     }
   };
 
-  const handleIgnoreReport = (reportId) => {
-    console.log('Ignorando denúncia:', reportId);
-    if (confirm('Tem certeza que deseja ignorar esta denúncia?')) {
-      alert('Denúncia marcada como ignorada!');
-    }
+  const selectedGameData = selectedGame ? gameData[selectedGame] : null;
+
+  // Export functions
+  const exportCSV = () => {
+    console.log('Exportando CSV para o jogo:', selectedGame);
+    alert('Dados exportados em CSV!');
+  };
+
+  const exportPDF = () => {
+    console.log('Exportando PDF para o jogo:', selectedGame);
+    alert('Relatório PDF gerado!');
   };
 
   // Navigation Component
@@ -132,13 +115,13 @@ const TorcidaSolidariaSimpleReports = () => {
           </button>
           
           <button 
-            onClick={() => setCurrentScreen('reports')}
+            onClick={() => setCurrentScreen('analytics')}
             className={`flex items-center space-x-2 px-3 py-2 rounded transition-colors ${
-              currentScreen === 'reports' ? 'bg-red-700' : 'hover:bg-red-700'
+              currentScreen === 'analytics' ? 'bg-red-700' : 'hover:bg-red-700'
             }`}
           >
-            <Shield className="w-4 h-4" />
-            <span>Moderação</span>
+            <BarChart3 className="w-4 h-4" />
+            <span>Relatórios</span>
           </button>
           
           <div className="flex items-center space-x-2 ml-6">
@@ -154,174 +137,180 @@ const TorcidaSolidariaSimpleReports = () => {
     </nav>
   );
 
-  // Reports Screen
-  const ReportsScreen = () => (
+  // Analytics Screen
+  const AnalyticsScreen = () => (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-red-500 to-black text-white p-6 rounded-lg shadow-lg">
-        <div className="flex items-center space-x-4">
-          <AlertTriangle className="w-12 h-12" />
-          <div>
-            <h2 className="text-2xl font-bold">Denúncias e Avaliações</h2>
-            <p className="text-red-100 mt-1">
-              Acompanhe e responda a denúncias entre usuários
-            </p>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <BarChart3 className="w-12 h-12" />
+            <div>
+              <h2 className="text-2xl font-bold">Acompanhamento de Caronas</h2>
+              <p className="text-red-100 mt-1">
+                Estatísticas e dados das caronas por evento
+              </p>
+            </div>
+          </div>
+          
+          <div className="flex space-x-3">
+            <button 
+              onClick={exportCSV}
+              disabled={!selectedGame}
+              className="bg-white text-red-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors flex items-center disabled:opacity-50"
+            >
+              <Download className="w-4 h-4 mr-2" />
+              CSV
+            </button>
+            <button 
+              onClick={exportPDF}
+              disabled={!selectedGame}
+              className="bg-white text-red-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors flex items-center disabled:opacity-50"
+            >
+              <FileText className="w-4 h-4 mr-2" />
+              PDF
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Stats and Filter */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-black text-white p-4 rounded-lg">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-300 text-sm">Total</p>
-              <p className="text-2xl font-bold">{reports.length}</p>
-            </div>
-            <AlertTriangle className="w-8 h-8 text-red-400" />
-          </div>
-        </div>
-        
-        <div className="bg-black text-white p-4 rounded-lg">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-300 text-sm">Pendentes</p>
-              <p className="text-2xl font-bold">{reports.filter(r => r.status === 'pendente').length}</p>
-            </div>
-            <Clock className="w-8 h-8 text-yellow-400" />
-          </div>
-        </div>
-        
-        <div className="bg-black text-white p-4 rounded-lg">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-300 text-sm">Resolvidos</p>
-              <p className="text-2xl font-bold">{reports.filter(r => r.status === 'resolvido').length}</p>
-            </div>
-            <Shield className="w-8 h-8 text-green-400" />
-          </div>
-        </div>
-        
-        <div className="bg-white p-4 rounded-lg shadow-lg">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Filtrar por Status
-          </label>
-          <select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
-          >
-           
-            <option value="pendente">Pendentes</option>
-            <option value="resolvido">Resolvidos</option>
-            <option value="ignorado">Ignorados</option>
-          </select>
-        </div>
-      </div>
-
-      {/* Reports List */}
+      {/* Game Selector */}
       <div className="bg-white rounded-lg shadow-lg p-6">
         <h3 className="text-xl font-bold mb-4 flex items-center">
-          <AlertTriangle className="w-5 h-5 mr-2 text-red-600" />
-          Lista de Denúncias
+          <Calendar className="w-5 h-5 mr-2 text-red-600" />
+          Seletor de Jogo
         </h3>
         
-        <div className="space-y-4">
-          {filteredReports.map(report => (
-            <div key={report.id} className="border border-gray-200 rounded-lg p-4">
-              <div className="flex justify-between items-start mb-3">
-                <div className="flex-1">
-                  <div className="flex items-center space-x-3 mb-2">
-                    <h4 className="font-semibold text-gray-800">
-                      Usuário: {report.reportedUser}
-                    </h4>
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${
-                      report.severity === 'alta' ? 'bg-red-100 text-red-800' :
-                      report.severity === 'media' ? 'bg-yellow-100 text-yellow-800' :
-                      'bg-blue-100 text-blue-800'
-                    }`}>
-                      {report.severity === 'alta' ? '🔴 Alta' :
-                       report.severity === 'media' ? '🟡 Média' : '🔵 Baixa'}
-                    </span>
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${
-                      report.status === 'pendente' ? 'bg-yellow-100 text-yellow-800' :
-                      report.status === 'resolvido' ? 'bg-green-100 text-green-800' :
-                      'bg-gray-100 text-gray-800'
-                    }`}>
-                      {report.status}
-                    </span>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600 mb-3">
-                    <div className="flex items-center">
-                      <User className="w-4 h-4 mr-2" />
-                      <span>Denunciado por: {report.reportedBy}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <Calendar className="w-4 h-4 mr-2" />
-                      <span>Data: {new Date(report.rideDate).toLocaleDateString('pt-BR')}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <Car className="w-4 h-4 mr-2" />
-                      <span>Jogo: {report.game}</span>
-                    </div>
-                  </div>
-                  
-                  <div className="mb-3">
-                    <p className="font-medium text-gray-800 mb-1">Motivo:</p>
-                    <p className="text-gray-600">{report.reason}</p>
-                  </div>
-                  
-                  <div className="bg-gray-50 p-3 rounded">
-                    <p className="font-medium text-gray-800 mb-1">Detalhes:</p>
-                    <p className="text-gray-600 text-sm">{report.details}</p>
-                  </div>
-                </div>
-              </div>
-              
-              {report.status === 'pendente' && (
-                <div className="flex space-x-3 pt-3 border-t">
-                  <button
-                    onClick={() => handleViewDetails(report.id)}
-                    className="flex items-center px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
-                  >
-                    <Eye className="w-4 h-4 mr-2" />
-                    Visualizar Detalhes
-                  </button>
-                  
-                  <button
-                    onClick={() => handleSuspendUser(report.id)}
-                    className="flex items-center px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
-                  >
-                    <UserX className="w-4 h-4 mr-2" />
-                    Suspender Temporariamente
-                  </button>
-                  
-                  <button
-                    onClick={() => handleIgnoreReport(report.id)}
-                    className="flex items-center px-3 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm"
-                  >
-                    <X className="w-4 h-4 mr-2" />
-                    Ignorar Denúncia
-                  </button>
-                </div>
-              )}
-            </div>
+        <select
+          value={selectedGame}
+          onChange={(e) => setSelectedGame(e.target.value)}
+          className="w-full md:w-auto border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-500"
+        >
+          <option value="">Selecione um jogo para ver as estatísticas</option>
+          {games.map(game => (
+            <option key={game.id} value={game.id}>
+              {game.name} - {new Date(game.date).toLocaleDateString('pt-BR')}
+            </option>
           ))}
-        </div>
-        
-        {filteredReports.length === 0 && (
-          <div className="text-center py-8">
-            <AlertTriangle className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-            <h3 className="text-lg font-semibold text-gray-700 mb-2">
-              Nenhuma denúncia encontrada
-            </h3>
-            <p className="text-gray-600">
-              Não há denúncias com o status "{filterStatus}" no momento.
-            </p>
-          </div>
-        )}
+        </select>
       </div>
+
+      {selectedGameData && (
+        <>
+          {/* Statistics Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="bg-black text-white p-6 rounded-lg">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-300 text-sm">Total de Caronas</p>
+                  <p className="text-2xl font-bold">{selectedGameData.totalRides}</p>
+                </div>
+                <Car className="w-8 h-8 text-red-400" />
+              </div>
+            </div>
+            
+            <div className="bg-black text-white p-6 rounded-lg">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-300 text-sm">Total Passageiros</p>
+                  <p className="text-2xl font-bold">{selectedGameData.totalPassengers}</p>
+                </div>
+                <Users className="w-8 h-8 text-red-400" />
+              </div>
+            </div>
+            
+            <div className="bg-black text-white p-6 rounded-lg">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-300 text-sm">Taxa de Ocupação</p>
+                  <p className="text-2xl font-bold">{selectedGameData.occupancyRate}%</p>
+                </div>
+                <PieChart className="w-8 h-8 text-red-400" />
+              </div>
+            </div>
+            
+            <div className="bg-black text-white p-6 rounded-lg">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-300 text-sm">Média por Carona</p>
+                  <p className="text-2xl font-bold">
+                    {Math.round(selectedGameData.totalPassengers / selectedGameData.totalRides)}
+                  </p>
+                </div>
+                <BarChart3 className="w-8 h-8 text-red-400" />
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Neighborhoods Chart */}
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <h3 className="text-lg font-bold mb-4 flex items-center">
+                <MapPin className="w-5 h-5 mr-2 text-red-600" />
+                Bairros Mais Ativos
+              </h3>
+              
+              <div className="space-y-3">
+                {selectedGameData.neighborhoods.map((neighborhood, index) => (
+                  <div key={index} className="flex items-center space-x-4">
+                    <div className="w-20 text-sm font-medium text-gray-700">
+                      {neighborhood.name}
+                    </div>
+                    <div className="flex-1 bg-gray-200 rounded-full h-4">
+                      <div 
+                        className="bg-red-600 h-4 rounded-full transition-all duration-500"
+                        style={{ width: `${neighborhood.percentage}%` }}
+                      ></div>
+                    </div>
+                    <div className="w-12 text-sm font-bold text-gray-800">
+                      {neighborhood.rides}
+                    </div>
+                    <div className="w-12 text-xs text-gray-600">
+                      {neighborhood.percentage}%
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Rides Detail */}
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <h3 className="text-lg font-bold mb-4 flex items-center">
+                <Users className="w-5 h-5 mr-2 text-red-600" />
+                Detalhes das Caronas
+              </h3>
+              
+              <div className="space-y-3">
+                {selectedGameData.ridesDetail.map((ride, index) => (
+                  <div key={index} className="border border-gray-200 rounded-lg p-4">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <h4 className="font-medium text-gray-800">{ride.driver}</h4>
+                        <p className="text-sm text-gray-600">{ride.neighborhood}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-bold text-gray-800">{ride.passengers} passageiros</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {!selectedGameData && (
+        <div className="bg-white rounded-lg shadow-lg p-12 text-center">
+          <BarChart3 className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">
+            Selecione um jogo
+          </h3>
+          <p className="text-gray-600">
+            Escolha um jogo no seletor acima para ver as estatísticas das caronas
+          </p>
+        </div>
+      )}
     </div>
   );
 
@@ -329,9 +318,9 @@ const TorcidaSolidariaSimpleReports = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation />
-      <ReportsScreen />
+      <AnalyticsScreen />
     </div>
   );
 };
 
-export default TorcidaSolidariaSimpleReports;
+export default TorcidaSolidariaSimpleAnalytics;
