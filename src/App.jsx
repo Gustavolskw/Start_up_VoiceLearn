@@ -1,84 +1,72 @@
 import React, { useState } from 'react';
 import { 
-  User,
-  Camera,
-  Save,
+  AlertTriangle,
   Star,
+  Send,
   Calendar,
+  User,
   Home,
   Car,
   MessageCircle,
-  Settings,
-  Bell,
-  Lock,
-  History,
-  MapPin,
-  Phone,
-  Mail
+  Clock,
+  MapPin
 } from 'lucide-react';
 
-const TorcidaSolidariaSimpleProfile = () => {
-  const [currentScreen, setCurrentScreen] = useState('profile');
+const TorcidaSolidariaSimpleFeedback = () => {
+  const [currentScreen, setCurrentScreen] = useState('feedback');
   const [formData, setFormData] = useState({
-    name: 'João Silva',
-    email: 'joao.silva@email.com',
-    phone: '(47) 99999-9999',
-    neighborhood: 'Aventureiro',
-    accountType: 'premium',
-    notifications: true,
-    privacy: false
+    type: '',
+    reportedUser: '',
+    game: '',
+    rating: 0,
+    reason: '',
+    description: ''
   });
 
   // Mock data
   const user = {
     name: 'João Silva',
-    photo: '/api/placeholder/100/100',
+    photo: '/api/placeholder/50/50',
     rating: 4.8,
-    totalRides: 23,
-    memberSince: '2024-01-15'
+    totalRides: 23
   };
 
-  const rideHistory = [
+  const recentRides = [
     {
       id: 1,
-      game: 'JEC x Criciúma',
-      date: '2025-05-25',
-      role: 'motorista',
-      rating: 5,
-      participants: 3
+      game: 'JEC x Chapecoense',
+      date: '2025-05-28',
+      driver: 'Carlos Lima',
+      passengers: ['Maria Santos', 'Pedro Costa'],
+      role: 'passageiro'
     },
     {
       id: 2,
       game: 'Krona x ACBF',
-      date: '2025-05-20',
-      role: 'passageiro',
-      rating: 4,
-      driver: 'Maria Santos'
+      date: '2025-05-25',
+      driver: 'João Silva',
+      passengers: ['Ana Oliveira', 'Lucas Santos'],
+      role: 'motorista'
     },
     {
       id: 3,
       game: 'JEC x Avaí',
-      date: '2025-05-15',
-      role: 'motorista',
-      rating: 5,
-      participants: 2
-    },
-    {
-      id: 4,
-      game: 'JEC x Figueirense',
-      date: '2025-05-10',
-      role: 'passageiro',
-      rating: 4,
-      driver: 'Carlos Lima'
-    },
-    {
-      id: 5,
-      game: 'Krona x Atlantico',
-      date: '2025-05-05',
-      role: 'motorista',
-      rating: 5,
-      participants: 4
+      date: '2025-05-20',
+      driver: 'Fernanda Silva',
+      passengers: ['Roberto Alves'],
+      role: 'passageiro'
     }
+  ];
+
+  const reasonOptions = [
+    'Chegou atrasado',
+    'Cancelou em cima da hora',
+    'Não compareceu',
+    'Comportamento inadequado',
+    'Dirigiu de forma perigosa',
+    'Foi desrespeitoso',
+    'Cobrou dinheiro pela carona',
+    'Outros'
   ];
 
   // Handle form changes
@@ -86,15 +74,41 @@ const TorcidaSolidariaSimpleProfile = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  // Handle form submission
-  const handleSave = () => {
-    console.log('Salvando dados do perfil:', formData);
-    alert('Perfil atualizado com sucesso!');
+  // Handle ride selection
+  const handleSelectRide = (ride) => {
+    const isDriver = ride.role === 'motorista';
+    setFormData(prev => ({
+      ...prev,
+      game: ride.game,
+      reportedUser: isDriver ? ride.passengers[0] : ride.driver,
+      type: isDriver ? 'passageiro' : 'motorista'
+    }));
   };
 
-  // Handle photo upload
-  const handlePhotoUpload = () => {
-    alert('Funcionalidade de upload de foto será implementada!');
+  // Handle star rating
+  const handleRating = (rating) => {
+    setFormData(prev => ({ ...prev, rating }));
+  };
+
+  // Handle form submission
+  const handleSubmit = () => {
+    if (!formData.reportedUser || !formData.game || !formData.reason) {
+      alert('Por favor, preencha todos os campos obrigatórios.');
+      return;
+    }
+
+    console.log('Enviando feedback:', formData);
+    alert('Feedback enviado com sucesso! Nossa equipe irá analisar em breve.');
+    
+    // Reset form
+    setFormData({
+      type: '',
+      reportedUser: '',
+      game: '',
+      rating: 0,
+      reason: '',
+      description: ''
+    });
   };
 
   // Navigation Component
@@ -130,13 +144,13 @@ const TorcidaSolidariaSimpleProfile = () => {
           </button>
           
           <button 
-            onClick={() => setCurrentScreen('profile')}
+            onClick={() => setCurrentScreen('feedback')}
             className={`flex items-center space-x-2 px-3 py-2 rounded transition-colors ${
-              currentScreen === 'profile' ? 'bg-red-700' : 'hover:bg-red-700'
+              currentScreen === 'feedback' ? 'bg-red-700' : 'hover:bg-red-700'
             }`}
           >
-            <User className="w-4 h-4" />
-            <span>Perfil</span>
+            <AlertTriangle className="w-4 h-4" />
+            <span>Feedback</span>
           </button>
           
           <div className="flex items-center space-x-2 ml-6">
@@ -152,29 +166,18 @@ const TorcidaSolidariaSimpleProfile = () => {
     </nav>
   );
 
-  // Profile Screen
-  const ProfileScreen = () => (
+  // Feedback Screen
+  const FeedbackScreen = () => (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-red-500 to-black text-white p-6 rounded-lg shadow-lg">
         <div className="flex items-center space-x-4">
-          <img 
-            src={user.photo} 
-            alt={user.name}
-            className="w-16 h-16 rounded-full border-4 border-white"
-          />
+          <AlertTriangle className="w-12 h-12" />
           <div>
-            <h2 className="text-2xl font-bold">Meu Perfil</h2>
-            <div className="flex items-center space-x-4 mt-2">
-              <div className="flex items-center space-x-1">
-                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                <span>{user.rating}</span>
-              </div>
-              <span>•</span>
-              <span>{user.totalRides} caronas</span>
-              <span>•</span>
-              <span>Membro desde {new Date(user.memberSince).getFullYear()}</span>
-            </div>
+            <h2 className="text-2xl font-bold">Cadastrar Feedback</h2>
+            <p className="text-red-100 mt-1">
+              Avalie ou denuncie um motorista ou passageiro
+            </p>
           </div>
         </div>
       </div>
@@ -183,217 +186,183 @@ const TorcidaSolidariaSimpleProfile = () => {
         {/* Form */}
         <div className="lg:col-span-2">
           <div className="bg-white rounded-lg shadow-lg p-6">
-            <h3 className="text-xl font-bold mb-6 flex items-center">
-              <User className="w-5 h-5 mr-2 text-red-600" />
-              Dados Pessoais
+            <h3 className="text-xl font-bold mb-4 flex items-center">
+              <Star className="w-5 h-5 mr-2 text-red-600" />
+              Dados do Feedback
             </h3>
             
             <div className="space-y-4">
-              {/* Personal Info */}
+              {/* Game and User */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Nome Completo
+                    Jogo
                   </label>
                   <input
                     type="text"
-                    value={formData.name}
-                    onChange={(e) => handleInputChange('name', e.target.value)}
+                    value={formData.game}
+                    onChange={(e) => handleInputChange('game', e.target.value)}
+                    placeholder="Nome do jogo"
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
                   />
                 </div>
-                
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Bairro
+                    Usuário
                   </label>
                   <input
                     type="text"
-                    value={formData.neighborhood}
-                    onChange={(e) => handleInputChange('neighborhood', e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => handleInputChange('email', e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Telefone
-                  </label>
-                  <input
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) => handleInputChange('phone', e.target.value)}
+                    value={formData.reportedUser}
+                    onChange={(e) => handleInputChange('reportedUser', e.target.value)}
+                    placeholder="Nome do usuário"
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
                   />
                 </div>
               </div>
 
-              {/* Account Type */}
+              {/* Type */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Tipo de Conta
+                  Tipo de Usuário
                 </label>
                 <select
-                  value={formData.accountType}
-                  onChange={(e) => handleInputChange('accountType', e.target.value)}
+                  value={formData.type}
+                  onChange={(e) => handleInputChange('type', e.target.value)}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
                 >
-                  <option value="basica">Básica</option>
-                  <option value="premium">Premium</option>
+                  <option value="">Selecione o tipo</option>
+                  <option value="motorista">Motorista</option>
+                  <option value="passageiro">Passageiro</option>
                 </select>
               </div>
 
-              {/* Settings */}
-              <div className="bg-gray-50 rounded-lg p-4">
-                <h4 className="font-semibold mb-3 flex items-center">
-                  <Settings className="w-4 h-4 mr-2" />
-                  Configurações
-                </h4>
-                
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <Bell className="w-4 h-4 text-gray-600" />
-                      <span className="text-sm">Receber notificações</span>
-                    </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input 
-                        type="checkbox" 
-                        className="sr-only peer" 
-                        checked={formData.notifications}
-                        onChange={(e) => handleInputChange('notifications', e.target.checked)}
-                      />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
-                    </label>
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <Lock className="w-4 h-4 text-gray-600" />
-                      <span className="text-sm">Perfil privado</span>
-                    </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input 
-                        type="checkbox" 
-                        className="sr-only peer" 
-                        checked={formData.privacy}
-                        onChange={(e) => handleInputChange('privacy', e.target.checked)}
-                      />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
-                    </label>
-                  </div>
+              {/* Rating */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Avaliação
+                </label>
+                <div className="flex space-x-1">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      onClick={() => handleRating(star)}
+                      className={`p-1 transition-colors ${
+                        star <= formData.rating ? 'text-yellow-400' : 'text-gray-300'
+                      }`}
+                    >
+                      <Star className={`w-6 h-6 ${star <= formData.rating ? 'fill-current' : ''}`} />
+                    </button>
+                  ))}
                 </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  Clique nas estrelas para avaliar (1-5)
+                </p>
               </div>
 
-              {/* Save Button */}
+              {/* Reason */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Motivo
+                </label>
+                <select
+                  value={formData.reason}
+                  onChange={(e) => handleInputChange('reason', e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                >
+                  <option value="">Selecione o motivo</option>
+                  {reasonOptions.map((reason, index) => (
+                    <option key={index} value={reason}>{reason}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Description */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Descrição Detalhada
+                </label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => handleInputChange('description', e.target.value)}
+                  rows="4"
+                  placeholder="Descreva o que aconteceu durante a carona..."
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                />
+              </div>
+
+              {/* Submit Button */}
               <button
-                onClick={handleSave}
+                onClick={handleSubmit}
                 className="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center font-medium"
               >
-                <Save className="w-4 h-4 mr-2" />
-                Salvar Alterações
+                <Send className="w-4 h-4 mr-2" />
+                Enviar Feedback
               </button>
             </div>
           </div>
         </div>
 
-        {/* Sidebar */}
+        {/* Recent Rides */}
         <div className="space-y-4">
-          {/* Photo */}
-          <div className="bg-black text-white rounded-lg p-6 text-center">
-            <div className="relative inline-block mb-4">
-              <img 
-                src={user.photo} 
-                alt={user.name}
-                className="w-24 h-24 rounded-full mx-auto border-4 border-white"
-              />
-              <button 
-                onClick={handlePhotoUpload}
-                className="absolute bottom-0 right-0 bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition-colors"
-              >
-                <Camera className="w-4 h-4" />
-              </button>
-            </div>
+          <div className="bg-black text-white rounded-lg p-6">
+            <h3 className="font-bold text-lg mb-4">Preenchimento Rápido</h3>
+            <p className="text-gray-300 text-sm mb-4">
+              Clique em uma carona recente para preencher automaticamente
+            </p>
             
-            <h3 className="font-bold text-lg mb-1">{user.name}</h3>
-            <p className="text-gray-300 capitalize">{formData.accountType}</p>
-            
-            <div className="flex items-center justify-center space-x-1 mt-3">
-              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-              <span className="font-medium">{user.rating}</span>
-              <span className="text-gray-300 text-sm ml-2">({user.totalRides} caronas)</span>
-            </div>
-          </div>
-
-          {/* Stats */}
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h3 className="font-bold mb-4 flex items-center">
-              <Car className="w-5 h-5 mr-2 text-red-600" />
-              Estatísticas
-            </h3>
-            
-            <div className="grid grid-cols-2 gap-4 text-center">
-              <div className="bg-gray-50 p-3 rounded-lg">
-                <div className="font-bold text-lg text-red-600">15</div>
-                <div className="text-xs text-gray-600">Como Motorista</div>
-              </div>
-              <div className="bg-gray-50 p-3 rounded-lg">
-                <div className="font-bold text-lg text-red-600">8</div>
-                <div className="text-xs text-gray-600">Como Passageiro</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Recent History */}
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h3 className="font-bold mb-4 flex items-center">
-              <History className="w-5 h-5 mr-2 text-red-600" />
-              Histórico Recente
-            </h3>
-            
-            <div className="space-y-3 max-h-64 overflow-y-auto">
-              {rideHistory.slice(0, 5).map(ride => (
-                <div key={ride.id} className="border-b border-gray-100 pb-3 last:border-0">
-                  <div className="flex justify-between items-start mb-1">
-                    <h4 className="font-medium text-sm">{ride.game}</h4>
-                    <div className="flex items-center space-x-1">
-                      <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                      <span className="text-xs">{ride.rating}</span>
+            <div className="space-y-3">
+              {recentRides.map((ride) => (
+                <button
+                  key={ride.id}
+                  onClick={() => handleSelectRide(ride)}
+                  className="w-full text-left p-3 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors"
+                >
+                  <div className="font-medium">{ride.game}</div>
+                  <div className="text-sm text-gray-300 mt-1">
+                    <div className="flex items-center mb-1">
+                      <Calendar className="w-3 h-3 mr-1" />
+                      {new Date(ride.date).toLocaleDateString('pt-BR')}
+                    </div>
+                    <div className="flex items-center">
+                      <User className="w-3 h-3 mr-1" />
+                      {ride.role === 'motorista' ? 'Você dirigiu' : `Motorista: ${ride.driver}`}
                     </div>
                   </div>
-                  
-                  <div className="text-xs text-gray-600 mb-2">
-                    {new Date(ride.date).toLocaleDateString('pt-BR')}
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${
-                      ride.role === 'motorista' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'
-                    }`}>
-                      {ride.role}
-                    </span>
-                    {ride.role === 'motorista' && (
-                      <span className="text-xs text-gray-600">
-                        {ride.participants} passageiros
-                      </span>
-                    )}
-                  </div>
-                </div>
+                </button>
               ))}
             </div>
           </div>
+
+          {formData.game && (
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <h3 className="font-bold mb-3 flex items-center">
+                <AlertTriangle className="w-5 h-5 mr-2 text-red-600" />
+                Preview do Feedback
+              </h3>
+              
+              <div className="space-y-2 text-sm">
+                <div><strong>Jogo:</strong> {formData.game}</div>
+                <div><strong>Usuário:</strong> {formData.reportedUser}</div>
+                {formData.type && <div><strong>Tipo:</strong> {formData.type}</div>}
+                {formData.rating > 0 && (
+                  <div className="flex items-center">
+                    <strong className="mr-2">Avaliação:</strong>
+                    <div className="flex">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Star 
+                          key={star} 
+                          className={`w-4 h-4 ${
+                            star <= formData.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                          }`} 
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {formData.reason && <div><strong>Motivo:</strong> {formData.reason}</div>}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -403,9 +372,9 @@ const TorcidaSolidariaSimpleProfile = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation />
-      <ProfileScreen />
+      <FeedbackScreen />
     </div>
   );
 };
 
-export default TorcidaSolidariaSimpleProfile;
+export default TorcidaSolidariaSimpleFeedback;
