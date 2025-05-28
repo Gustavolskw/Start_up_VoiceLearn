@@ -1,247 +1,411 @@
 import React, { useState } from 'react';
 import { 
+  User,
+  Camera,
+  Save,
+  Star,
+  Calendar,
+  Home,
   Car,
-  Mail,
+  MessageCircle,
+  Settings,
+  Bell,
   Lock,
-  Eye,
-  EyeOff,
-  AlertCircle,
-  LogIn
+  History,
+  MapPin,
+  Phone,
+  Mail
 } from 'lucide-react';
 
-const JECaronaLogin = () => {
+const TorcidaSolidariaSimpleProfile = () => {
+  const [currentScreen, setCurrentScreen] = useState('profile');
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    name: 'João Silva',
+    email: 'joao.silva@email.com',
+    phone: '(47) 99999-9999',
+    neighborhood: 'Aventureiro',
+    accountType: 'premium',
+    notifications: true,
+    privacy: false
   });
-  const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
+
+  // Mock data
+  const user = {
+    name: 'João Silva',
+    photo: '/api/placeholder/100/100',
+    rating: 4.8,
+    totalRides: 23,
+    memberSince: '2024-01-15'
+  };
+
+  const rideHistory = [
+    {
+      id: 1,
+      game: 'JEC x Criciúma',
+      date: '2025-05-25',
+      role: 'motorista',
+      rating: 5,
+      participants: 3
+    },
+    {
+      id: 2,
+      game: 'Krona x ACBF',
+      date: '2025-05-20',
+      role: 'passageiro',
+      rating: 4,
+      driver: 'Maria Santos'
+    },
+    {
+      id: 3,
+      game: 'JEC x Avaí',
+      date: '2025-05-15',
+      role: 'motorista',
+      rating: 5,
+      participants: 2
+    },
+    {
+      id: 4,
+      game: 'JEC x Figueirense',
+      date: '2025-05-10',
+      role: 'passageiro',
+      rating: 4,
+      driver: 'Carlos Lima'
+    },
+    {
+      id: 5,
+      game: 'Krona x Atlantico',
+      date: '2025-05-05',
+      role: 'motorista',
+      rating: 5,
+      participants: 4
+    }
+  ];
 
   // Handle form changes
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
-    }
   };
 
-  // Validate form
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email é obrigatório';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Email inválido';
-    }
-
-    if (!formData.password.trim()) {
-      newErrors.password = 'Senha é obrigatória';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Senha deve ter pelo menos 6 caracteres';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  // Handle form submission
+  const handleSave = () => {
+    console.log('Salvando dados do perfil:', formData);
+    alert('Perfil atualizado com sucesso!');
   };
 
-  // Handle login
-  const handleLogin = async () => {
-    if (!validateForm()) return;
-
-    setIsLoading(true);
-    
-    try {
-      // Simulate API call: POST /auth/login
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      console.log('API Call: POST /auth/login', {
-        email: formData.email,
-        password: formData.password
-      });
-      
-      // Mock response based on email to simulate different user types
-      const userType = formData.email.includes('admin') ? 'admin' : 'user';
-      
-      if (userType === 'admin') {
-        alert('Login realizado! Redirecionando para Painel de Moderação...');
-        console.log('Redirecionando para: /admin/dashboard');
-      } else {
-        alert('Login realizado! Redirecionando para Dashboard...');
-        console.log('Redirecionando para: /dashboard');
-      }
-      
-    } catch (error) {
-      console.error('Erro no login:', error);
-      setErrors({ general: 'Erro ao fazer login. Tente novamente.' });
-    } finally {
-      setIsLoading(false);
-    }
+  // Handle photo upload
+  const handlePhotoUpload = () => {
+    alert('Funcionalidade de upload de foto será implementada!');
   };
 
-  // Handle enter key
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      handleLogin();
-    }
-  };
-
-  return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="max-w-md w-full space-y-8">
-        {/* Header */}
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
-            <span className="text-red-600">JE</span>
-            <span className="text-black">Carona</span>
-          </h2>
-          <p className="text-gray-600 mb-8">
-            Conectando torcedores de Joinville
-          </p>
+  // Navigation Component
+  const Navigation = () => (
+    <nav className="bg-red-600 text-white p-4 shadow-lg">
+      <div className="max-w-6xl mx-auto flex justify-between items-center">
+        <div className="flex items-center space-x-3">
+          <div className="bg-white text-red-600 p-2 rounded-full">
+            <Car className="w-6 h-6" />
+          </div>
+          <h1 className="text-xl font-bold">Torcida Solidária</h1>
         </div>
+        
+        <div className="flex items-center space-x-6">
+          <button 
+            onClick={() => setCurrentScreen('dashboard')}
+            className={`flex items-center space-x-2 px-3 py-2 rounded transition-colors ${
+              currentScreen === 'dashboard' ? 'bg-red-700' : 'hover:bg-red-700'
+            }`}
+          >
+            <Home className="w-4 h-4" />
+            <span>Dashboard</span>
+          </button>
+          
+          <button 
+            onClick={() => setCurrentScreen('chat')}
+            className={`flex items-center space-x-2 px-3 py-2 rounded transition-colors ${
+              currentScreen === 'chat' ? 'bg-red-700' : 'hover:bg-red-700'
+            }`}
+          >
+            <MessageCircle className="w-4 h-4" />
+            <span>Chat</span>
+          </button>
+          
+          <button 
+            onClick={() => setCurrentScreen('profile')}
+            className={`flex items-center space-x-2 px-3 py-2 rounded transition-colors ${
+              currentScreen === 'profile' ? 'bg-red-700' : 'hover:bg-red-700'
+            }`}
+          >
+            <User className="w-4 h-4" />
+            <span>Perfil</span>
+          </button>
+          
+          <div className="flex items-center space-x-2 ml-6">
+            <img 
+              src={user.photo} 
+              alt={user.name}
+              className="w-8 h-8 rounded-full border-2 border-white"
+            />
+            <span className="text-sm">{user.name}</span>
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
 
-        {/* Login Form */}
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          <div className="space-y-6">
-            {/* General Error */}
-            {errors.general && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-center">
-                <AlertCircle className="w-5 h-5 text-red-600 mr-2" />
-                <span className="text-red-600 text-sm">{errors.general}</span>
+  // Profile Screen
+  const ProfileScreen = () => (
+    <div className="max-w-6xl mx-auto p-6 space-y-6">
+      {/* Welcome Section */}
+      <div className="bg-gradient-to-r from-red-500 to-black text-white p-6 rounded-lg shadow-lg">
+        <div className="flex items-center space-x-4">
+          <img 
+            src={user.photo} 
+            alt={user.name}
+            className="w-16 h-16 rounded-full border-4 border-white"
+          />
+          <div>
+            <h2 className="text-2xl font-bold">Meu Perfil</h2>
+            <div className="flex items-center space-x-4 mt-2">
+              <div className="flex items-center space-x-1">
+                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                <span>{user.rating}</span>
               </div>
-            )}
-
-            {/* Email Field */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="seu@email.com"
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 ${
-                    errors.email ? 'border-red-500 bg-red-50' : 'border-gray-300'
-                  }`}
-                />
-              </div>
-              {errors.email && (
-                <p className="text-red-600 text-sm mt-1 flex items-center">
-                  <AlertCircle className="w-4 h-4 mr-1" />
-                  {errors.email}
-                </p>
-              )}
+              <span>•</span>
+              <span>{user.totalRides} caronas</span>
+              <span>•</span>
+              <span>Membro desde {new Date(user.memberSince).getFullYear()}</span>
             </div>
+          </div>
+        </div>
+      </div>
 
-            {/* Password Field */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Senha
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Form */}
+        <div className="lg:col-span-2">
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h3 className="text-xl font-bold mb-6 flex items-center">
+              <User className="w-5 h-5 mr-2 text-red-600" />
+              Dados Pessoais
+            </h3>
+            
+            <div className="space-y-4">
+              {/* Personal Info */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Nome Completo
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => handleInputChange('name', e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  />
                 </div>
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  value={formData.password}
-                  onChange={(e) => handleInputChange('password', e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Digite sua senha"
-                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 ${
-                    errors.password ? 'border-red-500 bg-red-50' : 'border-gray-300'
-                  }`}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Bairro
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.neighborhood}
+                    onChange={(e) => handleInputChange('neighborhood', e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => handleInputChange('email', e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Telefone
+                  </label>
+                  <input
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => handleInputChange('phone', e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  />
+                </div>
+              </div>
+
+              {/* Account Type */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Tipo de Conta
+                </label>
+                <select
+                  value={formData.accountType}
+                  onChange={(e) => handleInputChange('accountType', e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
                 >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-                  ) : (
-                    <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-                  )}
-                </button>
+                  <option value="basica">Básica</option>
+                  <option value="premium">Premium</option>
+                </select>
               </div>
-              {errors.password && (
-                <p className="text-red-600 text-sm mt-1 flex items-center">
-                  <AlertCircle className="w-4 h-4 mr-1" />
-                  {errors.password}
-                </p>
-              )}
-            </div>
 
-            {/* Login Button */}
-            <button
-              onClick={handleLogin}
-              disabled={isLoading}
-              className="w-full bg-red-600 text-white py-3 px-4 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-            >
-              {isLoading ? (
-                <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                  Entrando...
-                </>
-              ) : (
-                <>
-                  <LogIn className="w-5 h-5 mr-2" />
-                  Entrar
-                </>
-              )}
-            </button>
-
-            {/* Register Button */}
-            <button
-              onClick={() => alert('Tela de cadastro será implementada!')}
-              className="w-full bg-white text-red-600 py-3 px-4 rounded-lg border-2 border-red-600 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors font-medium flex items-center justify-center"
-            >
-              <Car className="w-5 h-5 mr-2" />
-              Criar Conta
-            </button>
-
-            {/* Demo Credentials */}
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-medium text-gray-800 mb-2">Credenciais de Teste:</h4>
-              <div className="text-sm text-gray-600 space-y-1">
-                <div className="flex justify-between">
-                  <span>Usuário comum:</span>
-                  <span className="font-mono">user@jecarona.com</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Administrador:</span>
-                  <span className="font-mono">admin@jecarona.com</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Senha:</span>
-                  <span className="font-mono">123456</span>
+              {/* Settings */}
+              <div className="bg-gray-50 rounded-lg p-4">
+                <h4 className="font-semibold mb-3 flex items-center">
+                  <Settings className="w-4 h-4 mr-2" />
+                  Configurações
+                </h4>
+                
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Bell className="w-4 h-4 text-gray-600" />
+                      <span className="text-sm">Receber notificações</span>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        className="sr-only peer" 
+                        checked={formData.notifications}
+                        onChange={(e) => handleInputChange('notifications', e.target.checked)}
+                      />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                    </label>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Lock className="w-4 h-4 text-gray-600" />
+                      <span className="text-sm">Perfil privado</span>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        className="sr-only peer" 
+                        checked={formData.privacy}
+                        onChange={(e) => handleInputChange('privacy', e.target.checked)}
+                      />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                    </label>
+                  </div>
                 </div>
               </div>
+
+              {/* Save Button */}
+              <button
+                onClick={handleSave}
+                className="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center font-medium"
+              >
+                <Save className="w-4 h-4 mr-2" />
+                Salvar Alterações
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="text-center">
-          <p className="text-sm text-gray-600">
-            Conectando torcedores do JEC e Krona através de caronas solidárias
-          </p>
-          <div className="flex items-center justify-center mt-2 text-gray-500">
-            <Car className="w-4 h-4 mr-1" />
-            <span className="text-xs">Joinville - SC</span>
+        {/* Sidebar */}
+        <div className="space-y-4">
+          {/* Photo */}
+          <div className="bg-black text-white rounded-lg p-6 text-center">
+            <div className="relative inline-block mb-4">
+              <img 
+                src={user.photo} 
+                alt={user.name}
+                className="w-24 h-24 rounded-full mx-auto border-4 border-white"
+              />
+              <button 
+                onClick={handlePhotoUpload}
+                className="absolute bottom-0 right-0 bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition-colors"
+              >
+                <Camera className="w-4 h-4" />
+              </button>
+            </div>
+            
+            <h3 className="font-bold text-lg mb-1">{user.name}</h3>
+            <p className="text-gray-300 capitalize">{formData.accountType}</p>
+            
+            <div className="flex items-center justify-center space-x-1 mt-3">
+              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+              <span className="font-medium">{user.rating}</span>
+              <span className="text-gray-300 text-sm ml-2">({user.totalRides} caronas)</span>
+            </div>
+          </div>
+
+          {/* Stats */}
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h3 className="font-bold mb-4 flex items-center">
+              <Car className="w-5 h-5 mr-2 text-red-600" />
+              Estatísticas
+            </h3>
+            
+            <div className="grid grid-cols-2 gap-4 text-center">
+              <div className="bg-gray-50 p-3 rounded-lg">
+                <div className="font-bold text-lg text-red-600">15</div>
+                <div className="text-xs text-gray-600">Como Motorista</div>
+              </div>
+              <div className="bg-gray-50 p-3 rounded-lg">
+                <div className="font-bold text-lg text-red-600">8</div>
+                <div className="text-xs text-gray-600">Como Passageiro</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Recent History */}
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h3 className="font-bold mb-4 flex items-center">
+              <History className="w-5 h-5 mr-2 text-red-600" />
+              Histórico Recente
+            </h3>
+            
+            <div className="space-y-3 max-h-64 overflow-y-auto">
+              {rideHistory.slice(0, 5).map(ride => (
+                <div key={ride.id} className="border-b border-gray-100 pb-3 last:border-0">
+                  <div className="flex justify-between items-start mb-1">
+                    <h4 className="font-medium text-sm">{ride.game}</h4>
+                    <div className="flex items-center space-x-1">
+                      <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                      <span className="text-xs">{ride.rating}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="text-xs text-gray-600 mb-2">
+                    {new Date(ride.date).toLocaleDateString('pt-BR')}
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className={`px-2 py-1 rounded text-xs font-medium ${
+                      ride.role === 'motorista' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'
+                    }`}>
+                      {ride.role}
+                    </span>
+                    {ride.role === 'motorista' && (
+                      <span className="text-xs text-gray-600">
+                        {ride.participants} passageiros
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
+
+  // Main render
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Navigation />
+      <ProfileScreen />
+    </div>
+  );
 };
 
-export default JECaronaLogin;
+export default TorcidaSolidariaSimpleProfile;
