@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 
 const JECaronaApp = () => {
-  const [currentScreen, setCurrentScreen] = useState('dashboard');
+  const [currentScreen, setCurrentScreen] = useState('calendar');
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTeam, setSelectedTeam] = useState('ambos');
 
