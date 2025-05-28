@@ -75,7 +75,7 @@ const TorcidaSolidariaSimpleReports = () => {
   ];
 
   const filteredReports = reports.filter(report => {
-    if (filterStatus === 'resolvidos') return true;
+    if (filterStatus === 'ignorado') return true;
     return report.status === filterStatus;
   });
 
