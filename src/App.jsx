@@ -15,7 +15,7 @@ import {
 
 const TorcidaSolidariaSimpleAnalytics = () => {
   const [currentScreen, setCurrentScreen] = useState('analytics');
-  const [selectedGame, setSelectedGame] = useState(1);
+  const [selectedGame, setSelectedGame] = useState(2);
 
   // Mock data
   const user = {
